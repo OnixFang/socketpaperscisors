@@ -6,15 +6,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Socket-Paper-Scisors</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+    href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+    integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-  <h1>Client app</h1>
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-sm-12">
+        <h1>Socket Papers Scisors</h1>
+      </div>
+      <div class="col-sm-12">
+        <h6>Choose a name and join a game.</h6>
+      </div>
+    </div>
 
+    <div class="row justify-content-center">
+      <form id="frmJoinGame" class="col-sm-6">
+        <div class="form-group">
+          <label for="txtUsername" class="bmd-label-floating">Username</label>
+          <input id="txtUsername" type="text" class="form-control" required>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-raised btn-primary">Join Game</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+    integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+    integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+    crossorigin="anonymous"></script>
+  <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+  <!-- Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-  </script>
+  <!-- App JS -->
+  <script src="js/main.js"></script>
 </body>
 
 </html>
