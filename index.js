@@ -20,5 +20,5 @@ const io = socketIo(app.listen(port, () => {
 }));
 
 io.on('connection', (socket) => {
-  console.log('A user has connected.');
+  socket.emit('test1', 'You just connected to the socket.')
 });
