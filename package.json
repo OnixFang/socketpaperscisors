@@ -1,0 +1,16 @@
+{
+  "name": "socketpaperscisors",
+  "version": "1.0.0",
+  "description": "A rock paper scisors game with socket.io for multiplayer.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "OnixFang",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2",
+    "socket.io": "^2.3.0"
+  }
+}
