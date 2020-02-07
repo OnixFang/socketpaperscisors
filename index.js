@@ -6,6 +6,7 @@ const socketIo = require('socket.io');
 // Server variables
 const app = express();
 const port = 8018;
+let roomNumber = 0;
 
 // Server configuration
 app.use(express.static(path.join(__dirname, 'client')))
@@ -20,5 +21,19 @@ const io = socketIo(app.listen(port, () => {
 }));
 
 io.on('connection', (socket) => {
-  socket.emit('test1', 'You just connected to the socket.')
+  socket.on('joinGame', (username) => {
+    let currentRoom = 'room' + roomNumber.toString();
+
+    io.in(currentRoom).clients((err, socketIds) => {
+      if (socketIds.length === 2) {
+        roomNumber = roomNumber + 1;
+        currentRoom = 'room' + roomNumber.toString();
+      }
+
+      socket.join(currentRoom);
+      socket.emit('joinRoom', currentRoom);
+    });
+
+    console.log(`${username} has joined the queue.`);
+  });
 });

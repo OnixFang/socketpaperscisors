@@ -17,17 +17,17 @@
 </head>
 
 <body>
+  <div class="row text-center">
+    <div class="col-sm-12">
+      <h1>Socket Papers Scisors</h1>
+    </div>
+  </div>
+
   <div id="join" class="container">
-    <div class="row text-center">
-      <div class="col-sm-12">
-        <h1>Socket Papers Scisors</h1>
-      </div>
-      <div class="col-sm-12">
+    <div class="row justify-content-center">
+      <div class="col-sm-12 text-center">
         <h6>Choose a name and join a game.</h6>
       </div>
-    </div>
-
-    <div class="row justify-content-center">
       <form id="frmJoinGame" class="col-sm-6">
         <div class="form-group">
           <label for="txtUsername" class="bmd-label-floating">Username</label>
@@ -40,8 +40,19 @@
     </div>
   </div>
 
+  <div id="queue" class="container">
+    <div class="row text-center">
+      <div class="col-sm-12">
+        <span>Waiting for next player to join...</span>
+      </div>
+    </div>
+  </div>
+
   <div id="game" class="container">
     <div class="row text-center">
+      <div class="col-sm-12">
+        <h6>Choose your weapon.</h6>
+      </div>
       <div class="col-sm-4">
         <button class="btn btn-raised btn-primary">Rock</button>
       </div>
