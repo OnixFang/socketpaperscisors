@@ -17,50 +17,61 @@
 </head>
 
 <body>
-  <div class="row text-center">
-    <div class="col-sm-12">
-      <h1>Socket Papers Scisors</h1>
-    </div>
-  </div>
+  <div class="container-fluid d-flex h-100">
+    <div class="w-100 align-self-center jumbotron">
+      <h1 class="text-center">Socket Papers Scisors</h1>
 
-  <div id="join" class="container">
-    <div class="row justify-content-center">
-      <div class="col-sm-12 text-center">
-        <h6>Choose a name and join a game.</h6>
-      </div>
-      <form id="frmJoinGame" class="col-sm-6">
-        <div class="form-group">
-          <label for="txtUsername" class="bmd-label-floating">Username</label>
-          <input id="txtUsername" type="text" class="form-control" required>
+      <div class="row">
+        <div id="join" class="col-sm-6 mx-auto">
+          <h6 class="text-center">Choose a name and join a game.</h6>
+          <form id="frmJoinGame">
+            <div class="form-group">
+              <label for="txtUsername" class="bmd-label-floating">Username</label>
+              <input id="txtUsername" type="text" class="form-control" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-raised btn-primary">Join Game</button>
+            </div>
+          </form>
         </div>
-        <div class="text-center">
-          <button type="submit" class="btn btn-raised btn-primary">Join Game</button>
+
+        <div id="queue" class="col-sm-12">
+          <h6 class="text-center">Waiting for next player to join...</h6>
         </div>
-      </form>
-    </div>
-  </div>
 
-  <div id="queue" class="container">
-    <div class="row text-center">
-      <div class="col-sm-12">
-        <span>Waiting for next player to join...</span>
-      </div>
-    </div>
-  </div>
+        <div id="players" class="row mx-auto w-100">
+          <div class="col-6 mx-auto">
+            <div id="player1" class="card">
+              <div class="card-header">
+                <span id="player1-name">Playel 1</span>
+              </div>
+              <div class="card-body">
+                <span>Waiting for choice...</span>
+              </div>
+            </div>
+          </div>
 
-  <div id="game" class="container">
-    <div class="row text-center">
-      <div class="col-sm-12">
-        <h6>Choose your weapon.</h6>
-      </div>
-      <div class="col-sm-4">
-        <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Rock')">Rock</button>
-      </div>
-      <div class="col-sm-4">
-        <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Paper')">Paper</button>
-      </div>
-      <div class="col-sm-4">
-        <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Scisors')">Scisors</button>
+          <div class="col-6 mx-auto">
+            <div id="player2" class="card">
+              <div class="card-header">
+                <span id="player2-name">Playel 2</span>
+              </div>
+              <div class="card-body">
+                <span>Waiting for choice...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="game" class="col-sm-12">
+          <h6 class="text-center">Choose your weapon.</h6>
+          <div class="col-12 text-center">
+            <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Rock')">Rock</button>
+            <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Paper')">Paper</button>
+            <button type="button" class="btn btn-raised btn-primary" onclick="sendMessage('Scisors')">Scisors</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
