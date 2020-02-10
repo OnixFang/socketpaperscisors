@@ -23,18 +23,34 @@ const io = socketIo(app.listen(port, () => {
 io.on('connection', (socket) => {
   // Player Joining to queue
   socket.on('join-game', (username) => {
+    // Get current room number
     let currentRoom = 'room' + roomNumber.toString();
-    socket.join(currentRoom);
-    socket.emit('join-room', currentRoom);
 
+    // Join player's socket to the room
+    socket.join(currentRoom);
+
+    // Get number of players in room
     io.in(currentRoom).clients((err, socketIds) => {
-      if (socketIds.length > 1) {
+      let currentPlayers = socketIds.length;
+
+      // Close room if more than 1 player is inside
+      if (currentPlayers > 1) {
         io.in(currentRoom).emit('close-room', true);
         roomNumber = roomNumber + 1;
       }
-    });
 
-    console.log(`${username} has joined the queue.`);
+      // Create player info
+      let playerInfo = {
+        name: username,
+        order: currentPlayers,
+        choise: ''
+      };
+
+      // Send room and player information back to socket
+      socket.emit('join-room', currentRoom, playerInfo);
+
+      console.log(`${playerInfo.name} has joined the queue.`);
+    });
   });
 
   socket.on('submit-choice', (choice, room, user) => {

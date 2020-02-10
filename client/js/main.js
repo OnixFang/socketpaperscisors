@@ -1,16 +1,22 @@
 const socket = io();
 let room = '';
+let player = {};
 
 // Socket events
-socket.on('join-room', (roomName) => {
+socket.on('join-room', (roomName, playerInfo) => {
+  console.log(playerInfo);
   room = roomName;
+  player = playerInfo;
   $('#queue').show();
+
+  $(`#player${player.order}`).show();
+  $(`#player-name${player.order}`).html(player.name);
 
   console.log('Waiting for next player to join on: ', roomName);
 });
 
 socket.on('close-room', (bool) => {
-  console.log('event fired');
+  console.log('Room is now closed');
   $('#queue').hide();
   $('#game').show();
 });
