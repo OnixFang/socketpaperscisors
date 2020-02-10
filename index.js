@@ -21,19 +21,23 @@ const io = socketIo(app.listen(port, () => {
 }));
 
 io.on('connection', (socket) => {
-  socket.on('joinGame', (username) => {
+  // Player Joining to queue
+  socket.on('join-game', (username) => {
     let currentRoom = 'room' + roomNumber.toString();
+    socket.join(currentRoom);
+    socket.emit('join-room', currentRoom);
 
     io.in(currentRoom).clients((err, socketIds) => {
-      if (socketIds.length === 2) {
+      if (socketIds.length > 1) {
+        io.in(currentRoom).emit('close-room', true);
         roomNumber = roomNumber + 1;
-        currentRoom = 'room' + roomNumber.toString();
       }
-
-      socket.join(currentRoom);
-      socket.emit('joinRoom', currentRoom);
     });
 
     console.log(`${username} has joined the queue.`);
+  });
+
+  socket.on('submit-choice', (choice, room, user) => {
+    io.to(room).emit('player-choice', `${user} choose ${choice}!`);
   });
 });
