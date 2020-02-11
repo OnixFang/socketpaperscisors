@@ -26,31 +26,36 @@ io.on('connection', (socket) => {
     // Get current room number
     let currentRoom = 'room' + roomNumber.toString();
 
-    // Join player's socket to the room
-    socket.join(currentRoom);
+    // Create player info
+    let playerInfo = {
+      username: username,
+      choice: ''
+    };
 
-    // Get number of players in room
+    // Check room availability
     io.in(currentRoom).clients((err, socketIds) => {
       let currentPlayers = socketIds.length;
 
-      // Close room if more than 1 player is inside
-      if (currentPlayers > 1) {
+      if (currentPlayers >= 1) {
+        // Join socket to the room and send information back to the client
+        socket.join(currentRoom);
+        socket.emit('join-room', currentRoom, playerInfo);
+
+        // Close current room then increase room number
         io.in(currentRoom).emit('close-room', true);
         roomNumber = roomNumber + 1;
+      } else {
+        // Join socket to the room and send room/player back to the client
+        socket.join(currentRoom);
+        socket.emit('join-room', currentRoom, playerInfo);
+
+        console.log(`${playerInfo.username} has joined the queue.`);
       }
-
-      // Create player info
-      let playerInfo = {
-        name: username,
-        order: currentPlayers,
-        choise: ''
-      };
-
-      // Send room and player information back to socket
-      socket.emit('join-room', currentRoom, playerInfo);
-
-      console.log(`${playerInfo.name} has joined the queue.`);
     });
+  });
+
+  socket.on('send-opponent', (room, playerInfo) => {
+    socket.to(room).emit('get-opponent', playerInfo);
   });
 
   socket.on('submit-choice', (choice, room, user) => {
