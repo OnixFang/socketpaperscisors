@@ -49,13 +49,13 @@ io.on('connection', (socket) => {
         socket.join(currentRoom);
         socket.emit('join-room', currentRoom, playerInfo);
 
-        console.log(`${playerInfo.name} has joined the queue.`);
+        console.log(`${playerInfo.username} has joined the queue.`);
       }
     });
   });
 
   socket.on('send-opponent', (room, playerInfo) => {
-    socket.to(room).emit('get-opponent', opponentInfo, playerInfo);
+    socket.to(room).emit('get-opponent', playerInfo);
   });
 
   socket.on('submit-choice', (choice, room, user) => {

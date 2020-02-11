@@ -21,7 +21,7 @@ Vue.component('join-form', {
   `,
   data() {
     return {
-      username: null
+      username: ''
     }
   },
   methods: {
@@ -81,26 +81,27 @@ Vue.component('choices', {
 
 const app = new Vue({
   el: '#vue-app',
-  data: {
-    roomName: '',
-    roomState: 'join',
-    playerInfo: {},
-    opponent: {}
+  data() {
+    return {
+      roomName: '',
+      roomState: 'join',
+      playerInfo: null,
+      opponent: null
+    }
   },
   methods: {
     changeState(state) {
-      this.state = state;
+      this.roomState = state;
     }
   },
   mounted() {
     eventBus.$on('change-state', state => {
-      changeState(state);
+      this.changeState(state);
     });
     eventBus.$on('join-room', (roomName, playerInfo) => {
       this.roomName = roomName;
-      this.player = playerInfo;
+      this.playerInfo = playerInfo;
 
-      changeState('queue');
       console.log('Waiting for next player to join on: ', roomName);
     });
     eventBus.$on('close-room', () => {
@@ -109,10 +110,10 @@ const app = new Vue({
     eventBus.$on('get-opponent', (opponentInfo) => {
       this.opponent = opponentInfo;
 
-      changeState('game');
+      this.changeState('game');
     });
     eventBus.$on('submit-choice', (choice) => {
-      socket.emit('submit-choice', choice, this.roomName, this.players[0].username);
+      socket.emit('submit-choice', choice, this.roomName, this.playerInfo.username);
     });
   }
 });
