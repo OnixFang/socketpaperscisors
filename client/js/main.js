@@ -104,7 +104,7 @@ const app = new Vue({
       console.log('Waiting for next player to join on: ', roomName);
     });
     eventBus.$on('close-room', () => {
-      socket.emit('send-opponent', this.player);
+      socket.emit('send-opponent', this.roomName, this.playerInfo);
     });
     eventBus.$on('get-opponent', (opponentInfo) => {
       this.opponent = opponentInfo;

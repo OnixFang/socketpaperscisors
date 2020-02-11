@@ -54,9 +54,8 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('send-opponent', (player) => {
-    let opponentInfo = {};
-    socket.emit('get-opponent', opponentInfo);
+  socket.on('send-opponent', (room, playerInfo) => {
+    socket.to(room).emit('get-opponent', opponentInfo, playerInfo);
   });
 
   socket.on('submit-choice', (choice, room, user) => {
