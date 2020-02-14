@@ -15,6 +15,43 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/index.html');
 });
 
+function joinToNextOpenRoom(socket, roomIndex = 0) {
+  const roomName = `room${roomIndex}`;
+
+  if (roomName === socket.roomToSkip) {
+    console.log(`Skipping ${roomName}.`);
+    joinToNextOpenRoom(socket, roomIndex + 1);
+  } else {
+    io.in(roomName).clients((err, socketIds) => {
+      console.log(`Checking ${roomName}.`);
+      if (socketIds.length < 2) {
+        console.log('Room is available');
+        // Create player info
+        const playerInfo = {
+          username: socket.username,
+          choice: ''
+        };
+
+        socket.join(roomName);
+        socket.emit('join-room', roomName, playerInfo);
+
+        // Close room if there are 2 players in it
+        if (socketIds.length >= 1) {
+          io.in(roomName).emit('close-room', true);
+          console.log(`${playerInfo.username} is joining ${roomName}.`);
+          console.log('Room is now full, closing room.');
+          console.log(`Match starting in ${roomName}.`);
+        } else {
+          console.log(`${playerInfo.username} is waiting on ${roomName}.`);
+        }
+      } else {
+        console.log('Room full, going to next room.');
+        joinToNextOpenRoom(socket, roomIndex + 1);
+      }
+    });
+  }
+}
+
 // Server launch
 const io = socketIo(app.listen(port, () => {
   console.log(`App listening on http://localhost:${port}`);
@@ -22,36 +59,20 @@ const io = socketIo(app.listen(port, () => {
 
 io.on('connection', (socket) => {
   // Player Joining to queue
-  socket.on('join-game', (username) => {
-    // Get current room number
-    let currentRoom = 'room' + roomNumber.toString();
-
-    // Create player info
-    let playerInfo = {
-      username: username,
-      choice: ''
-    };
-
-    // Check room availability
-    io.in(currentRoom).clients((err, socketIds) => {
-      let currentPlayers = socketIds.length;
-
-      if (currentPlayers >= 1) {
-        // Join socket to the room and send information back to the client
-        socket.join(currentRoom);
-        socket.emit('join-room', currentRoom, playerInfo);
-
-        // Close current room then increase room number
-        io.in(currentRoom).emit('close-room', true);
-        roomNumber = roomNumber + 1;
-      } else {
-        // Join socket to the room and send room/player back to the client
-        socket.join(currentRoom);
-        socket.emit('join-room', currentRoom, playerInfo);
-
-        console.log(`${playerInfo.username} has joined the queue.`);
+  socket.on('join-game', (username, roomToSkip) => {
+    // Get player out of any previous rooms if re-joining queue
+    for (const key in socket.rooms) {
+      if (key != socket.id) {
+        socket.leave(socket.rooms[key]);
       }
-    });
+    }
+
+    socket.username = username;
+    socket.roomToSkip = roomToSkip;
+
+    // Join player to the next open room
+    console.log('------------------ New Join request ------------------');
+    joinToNextOpenRoom(socket);
   });
 
   socket.on('send-opponent', (room, playerInfo) => {
@@ -60,5 +81,23 @@ io.on('connection', (socket) => {
 
   socket.on('submit-choice', (choice, room, user) => {
     io.to(room).emit('player-choice', `${user} choose ${choice}!`);
+  });
+
+  socket.on('leave-match', (roomName) => {
+    socket.to(roomName).emit('left-room', true);
+    socket.leave(roomName);
+    console.log(`${socket.username} left ${roomName}.`);
+  });
+
+  socket.on('disconnecting', (reason) => {
+    for (const key in socket.rooms) {
+      // Check if the player was in a room
+      if (key != socket.id) {
+        let oldRoom = socket.rooms[key];
+
+        // Inform opponent to leave that room and join new one
+        socket.to(oldRoom).emit('left-room', true);
+      }
+    }
   });
 });

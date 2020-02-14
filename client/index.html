@@ -33,6 +33,11 @@
 
         <choices v-show="roomState === 'game'"></choices>
 
+        <div class="col-sm-12 text-center">
+          <button type="button" class="btn btn-raised btn-danger" v-on:click="leaveMatch()"
+            :enabled="roomState === 'game'" v-show="roomState === 'game'">Leave Match</button>
+        </div>
+
       </div>
     </div>
   </div>

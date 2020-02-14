@@ -63,17 +63,15 @@ Vue.component('player', {
 
 Vue.component('choices', {
   template: `
-    <div class="col-sm-12">
+    <div class="col-12 text-center">
       <h6 class="text-center">Choose your weapon.</h6>
-      <div class="col-12 text-center">
-        <button type="button" class="btn btn-raised btn-primary" v-on:click="sendMessage('Rock')">Rock</button>
-        <button type="button" class="btn btn-raised btn-primary" v-on:click="sendMessage('Paper')">Paper</button>
-        <button type="button" class="btn btn-raised btn-primary" v-on:click="sendMessage('Scisors')">Scisors</button>
-      </div>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Rock')">Rock</button>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Paper')">Paper</button>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Scisors')">Scisors</button>
     </div>
   `,
   methods: {
-    sendMessage(choice) {
+    submitChoice(choice) {
       eventBus.$emit('submit-choice', choice);
     }
   }
@@ -89,9 +87,24 @@ const app = new Vue({
       opponent: null
     }
   },
+  computed: {
+    controlsEnabled() {
+      if (this.playerInfo.choice.legth === 0) {
+        return true;
+      }
+
+      return false;
+    }
+  },
   methods: {
     changeState(state) {
       this.roomState = state;
+    },
+    leaveMatch() {
+      this.opponent = null;
+      socket.emit('leave-match', this.roomName);
+      socket.emit('join-game', this.playerInfo.username, this.roomName);
+      this.changeState('queue');
     }
   },
   mounted() {
@@ -113,7 +126,14 @@ const app = new Vue({
       this.changeState('game');
     });
     eventBus.$on('submit-choice', (choice) => {
+      this.playerInfo.choice = choice;
       socket.emit('submit-choice', choice, this.roomName, this.playerInfo.username);
+    });
+    eventBus.$on('left-room', () => {
+      this.opponent = null;
+      socket.emit('join-game', this.playerInfo.username);
+      this.changeState('queue');
+      console.log('A summoner has disconnected.');
     });
   }
 });
@@ -133,4 +153,8 @@ socket.on('get-opponent', (opponentInfo) => {
 
 socket.on('player-choice', (message) => {
   console.log(message);
+});
+
+socket.on('left-room', (bool) => {
+  eventBus.$emit('left-room', bool);
 });
