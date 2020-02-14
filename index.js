@@ -23,9 +23,8 @@ function joinToNextOpenRoom(socket, roomIndex = 0) {
     joinToNextOpenRoom(socket, roomIndex + 1);
   } else {
     io.in(roomName).clients((err, socketIds) => {
-      console.log(`Checking ${roomName}.`);
+      console.log(`${roomName}: ${socketIds.length} players.`);
       if (socketIds.length < 2) {
-        console.log('Room is available');
         // Create player info
         const playerInfo = {
           username: socket.username,
@@ -34,15 +33,13 @@ function joinToNextOpenRoom(socket, roomIndex = 0) {
 
         socket.join(roomName);
         socket.emit('join-room', roomName, playerInfo);
+        console.log(`${playerInfo.username} joined ${roomName}.`);
 
         // Close room if there are 2 players in it
         if (socketIds.length >= 1) {
           io.in(roomName).emit('close-room', true);
-          console.log(`${playerInfo.username} is joining ${roomName}.`);
-          console.log('Room is now full, closing room.');
+          console.log('Room is now full. Closing room.');
           console.log(`Match starting in ${roomName}.`);
-        } else {
-          console.log(`${playerInfo.username} is waiting on ${roomName}.`);
         }
       } else {
         console.log('Room full, going to next room.');
@@ -71,7 +68,7 @@ io.on('connection', (socket) => {
     socket.roomToSkip = roomToSkip;
 
     // Join player to the next open room
-    console.log('------------------ New Join request ------------------');
+    console.log(`------------------ New Join request from ${username} ------------------`);
     joinToNextOpenRoom(socket);
   });
 
@@ -86,7 +83,7 @@ io.on('connection', (socket) => {
   socket.on('leave-match', (roomName) => {
     socket.to(roomName).emit('left-room', true);
     socket.leave(roomName);
-    console.log(`${socket.username} left ${roomName}.`);
+    console.log(`------------------> ${socket.username} left ${roomName}.`);
   });
 
   socket.on('disconnecting', (reason) => {
@@ -96,6 +93,7 @@ io.on('connection', (socket) => {
         let oldRoom = socket.rooms[key];
 
         // Inform opponent to leave that room and join new one
+        console.log(`------------------> ${socket.username} disconnected from ${roomName}.`);
         socket.to(oldRoom).emit('left-room', true);
       }
     }
