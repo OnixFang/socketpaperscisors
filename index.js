@@ -90,11 +90,11 @@ io.on('connection', (socket) => {
     for (const key in socket.rooms) {
       // Check if the player was in a room
       if (key != socket.id) {
-        let oldRoom = socket.rooms[key];
+        let roomName = socket.rooms[key];
 
         // Inform opponent to leave that room and join new one
         console.log(`------------------> ${socket.username} disconnected from ${roomName}.`);
-        socket.to(oldRoom).emit('left-room', true);
+        socket.to(roomName).emit('left-room', true);
       }
     }
   });
