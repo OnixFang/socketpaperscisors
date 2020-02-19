@@ -1,7 +1,6 @@
-const eventBus = new Vue()
+const eventBus = new Vue();
 
 const socket = io();
-let room = '';
 
 Vue.component('join-form', {
   template: `
@@ -22,7 +21,7 @@ Vue.component('join-form', {
   data() {
     return {
       username: ''
-    }
+    };
   },
   methods: {
     onSumbit() {
@@ -62,12 +61,18 @@ Vue.component('player', {
 });
 
 Vue.component('choices', {
+  props: {
+    canChoose: {
+      type: Boolean,
+      required: true
+    }
+  },
   template: `
     <div class="col-12 text-center">
       <h6 class="text-center">Choose your weapon.</h6>
-      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Rock')">Rock</button>
-      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Paper')">Paper</button>
-      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Scisors')">Scisors</button>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Rock')" :disabled="canChoose">Rock</button>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Paper')" :disabled="canChoose">Paper</button>
+      <button type="button" class="btn btn-raised btn-primary" v-on:click="submitChoice('Scisors')" :disabled="canChoose">Scisors</button>
     </div>
   `,
   methods: {
@@ -77,7 +82,7 @@ Vue.component('choices', {
   }
 });
 
-const app = new Vue({
+new Vue({
   el: '#vue-app',
   data() {
     return {
@@ -85,14 +90,16 @@ const app = new Vue({
       roomState: 'join',
       playerInfo: null,
       opponent: null
-    }
+    };
   },
   computed: {
-    controlsEnabled() {
-      if (this.playerInfo.choice.legth === 0) {
-        return true;
+    buttonDisabled() {
+      if (this.playerInfo !== null) {
+        if (this.playerInfo.choice.length > 1) {
+          console.log('Choice lenght is greater than 1.');
+          return true;
+        }
       }
-
       return false;
     }
   },
@@ -143,7 +150,7 @@ socket.on('join-room', (roomName, playerInfo) => {
   eventBus.$emit('join-room', roomName, playerInfo);
 });
 
-socket.on('close-room', (bool) => {
+socket.on('close-room', () => {
   eventBus.$emit('close-room', true);
 });
 

@@ -31,11 +31,11 @@
           <player v-if="opponent" v-bind:player="opponent"></player>
         </div>
 
-        <choices v-show="roomState === 'game'"></choices>
+        <choices v-show="roomState === 'game'" v-bind:can-choose="controlsEnabled"></choices>
 
         <div class="col-sm-12 text-center">
           <button type="button" class="btn btn-raised btn-danger" v-on:click="leaveMatch()"
-            :enabled="roomState === 'game'" v-show="roomState === 'game'">Leave Match</button>
+            :disabled="controlsEnabled" v-show="roomState === 'game'">Leave Match</button>
         </div>
 
       </div>
