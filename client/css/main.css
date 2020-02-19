@@ -1,0 +1,7 @@
+#join, #game, #queue, #player1, #player2 {
+  display: none;
+}
+
+html, body {
+  height: 100%;
+}

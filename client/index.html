@@ -17,26 +17,28 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="row text-center">
-      <div class="col-sm-12">
-        <h1>Socket Papers Scisors</h1>
-      </div>
-      <div class="col-sm-12">
-        <h6>Choose a name and join a game.</h6>
-      </div>
-    </div>
+  <div id="vue-app" class="container-fluid d-flex h-100">
+    <div class="w-100 align-self-center jumbotron">
+      <h1 class="text-center">Socket Papers Scisors</h1>
 
-    <div class="row justify-content-center">
-      <form id="frmJoinGame" class="col-sm-6">
-        <div class="form-group">
-          <label for="txtUsername" class="bmd-label-floating">Username</label>
-          <input id="txtUsername" type="text" class="form-control" required>
+      <div class="row">
+        <join-form v-show="roomState === 'join'"></join-form>
+
+        <queue v-show="roomState === 'queue'"></queue>
+
+        <div id="players" class="row mx-auto w-100 my-5">
+          <player v-if="playerInfo" v-bind:player="playerInfo"></player>
+          <player v-if="opponent" v-bind:player="opponent"></player>
         </div>
-        <div class="text-center">
-          <button type="submit" class="btn btn-raised btn-primary">Join Game</button>
+
+        <choices v-show="roomState === 'game'"></choices>
+
+        <div class="col-sm-12 text-center">
+          <button type="button" class="btn btn-raised btn-danger" v-on:click="leaveMatch()"
+            :enabled="roomState === 'game'" v-show="roomState === 'game'">Leave Match</button>
         </div>
-      </form>
+
+      </div>
     </div>
   </div>
 
@@ -55,6 +57,8 @@
   <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
   <!-- Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
+  <!-- Vue.js -->
+  <script src="lib/vue.js"></script>
   <!-- App JS -->
   <script src="js/main.js"></script>
 </body>
