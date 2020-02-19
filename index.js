@@ -6,10 +6,9 @@ const socketIo = require('socket.io');
 // Server variables
 const app = express();
 const port = 8018;
-let roomNumber = 0;
 
 // Server configuration
-app.use(express.static(path.join(__dirname, 'client')))
+app.use(express.static(path.join(__dirname, 'client')));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/index.html');
@@ -86,7 +85,7 @@ io.on('connection', (socket) => {
     console.log(`------------------> ${socket.username} left ${roomName}.`);
   });
 
-  socket.on('disconnecting', (reason) => {
+  socket.on('disconnecting', () => {
     for (const key in socket.rooms) {
       // Check if the player was in a room
       if (key != socket.id) {
